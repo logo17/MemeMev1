@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MemeEditorViewController.swift
 //  MemeMe App
 //
 //  Created by Heriberto Ureña madrigal on 12/18/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class MemeEditorViewController: UIViewController {
     
     enum ImagePickerType : Int {
         case camera = 0, album
@@ -26,12 +26,15 @@ class ViewController: UIViewController {
     @IBOutlet weak var shareButton: UIBarButtonItem!
     
     var meme : Meme!
+    static let defaultValueTopTextfield: String = "TOP"
+    static let defaultValueBottomTextfield: String = "BOTTOM"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         meme = Meme()
         shareButton.isEnabled = false
-        initTextFields()
+        initTextFields(bottomTextField)
+        initTextFields(topTextField)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,18 +48,17 @@ class ViewController: UIViewController {
         unsubscribeFromKeyboardNotifications()
     }
     
-    func initTextFields() {
+    func initTextFields(_ textField: UITextField) {
         let textFieldAttributes = [NSAttributedStringKey.foregroundColor.rawValue : UIColor.white, NSAttributedStringKey.font.rawValue : UIFont(name: "Impact", size: CGFloat(40.0)) as Any, NSAttributedStringKey.strokeColor.rawValue : UIColor.black, NSAttributedStringKey.strokeWidth.rawValue : -5]
-        bottomTextField.delegate = self
-        bottomTextField.defaultTextAttributes = textFieldAttributes
-        bottomTextField.textAlignment = .center
-        bottomTextField.autocapitalizationType = .allCharacters
-        
-        topTextField.delegate = self
-        topTextField.defaultTextAttributes = textFieldAttributes
-        topTextField.textAlignment = .center
-        topTextField.autocapitalizationType = .allCharacters
-        
+        textField.delegate = self
+        textField.defaultTextAttributes = textFieldAttributes
+        textField.textAlignment = .center
+        textField.autocapitalizationType = .allCharacters
+    }
+    
+    func manageViewsVisibility(isHidden: Bool) {
+        toolbar.isHidden = isHidden
+        navigationBar.isHidden = isHidden
     }
 
     // MARK: Actions
@@ -86,8 +88,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func restartAppState(_ sender: Any) {
-        topTextField.text = "TOP"
-        bottomTextField.text = "BOTTOM"
+        topTextField.text = MemeEditorViewController.defaultValueTopTextfield
+        bottomTextField.text = MemeEditorViewController.defaultValueBottomTextfield
         imageView.image = nil
         shareButton.isEnabled = false
         restartMemeModel()
@@ -95,7 +97,7 @@ class ViewController: UIViewController {
     
     @objc func keyboardWillShow(_ notification: Notification) {
         if bottomTextField.isFirstResponder {
-            view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y = getKeyboardHeight(notification) * (-1)
         }
     }
     
@@ -124,19 +126,13 @@ class ViewController: UIViewController {
     }
     
     func generateMemedImage() -> UIImage {
-        
-        toolbar.isHidden = true
-        navigationBar.isHidden = true
-        
+        manageViewsVisibility(isHidden: true)
         // Render view to an image
         UIGraphicsBeginImageContext(self.view.frame.size)
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         let memedImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        
-        toolbar.isHidden = false
-        navigationBar.isHidden = false
-        
+        manageViewsVisibility(isHidden: false)
         return memedImage
     }
     

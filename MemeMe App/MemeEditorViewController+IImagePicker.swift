@@ -1,5 +1,5 @@
 //
-//  ViewController+UIImagePickerControllerDelegate.swift
+//  MemeEditorViewController+UIImagePickerControllerDelegate.swift
 //  MemeMe App
 //
 //  Created by Heriberto Ureña madrigal on 12/18/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension ViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension MemeEditorViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {

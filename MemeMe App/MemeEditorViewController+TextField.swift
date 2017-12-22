@@ -1,5 +1,5 @@
 //
-//  ViewController+TextField.swift
+//  MemeEditorViewController+TextField.swift
 //  MemeMe App
 //
 //  Created by Heriberto Ureña madrigal on 12/18/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension ViewController : UITextFieldDelegate {
+extension MemeEditorViewController : UITextFieldDelegate {
     
     enum TextFieldType : Int {
         case top = 0, bottom
@@ -26,7 +26,9 @@ extension ViewController : UITextFieldDelegate {
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        textField.text = ""
+        if textField.text == MemeEditorViewController.defaultValueTopTextfield || textField.text == MemeEditorViewController.defaultValueBottomTextfield {
+            textField.text = ""
+        }
     }
     
 }
