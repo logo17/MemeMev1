@@ -81,7 +81,8 @@ class MemeEditorViewController: UIViewController {
         activityViewController.completionWithItemsHandler = {
             (type : UIActivityType?, completed : Bool?, items : [Any]?, error : Error?) in
             if completed ?? false {
-                self.meme = Meme(topText: self.topTextField.text, bottomText: self.bottomTextField.text, originalImage: self.imageView.image, memedImage: memedImage)
+                self.save(memedImage: memedImage)
+                self.dismiss(animated: true, completion: nil)
             }
         }
         present(activityViewController, animated: true, completion: nil)
@@ -93,6 +94,7 @@ class MemeEditorViewController: UIViewController {
         imageView.image = nil
         shareButton.isEnabled = false
         restartMemeModel()
+        dismiss(animated: true, completion: nil)
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
@@ -103,6 +105,16 @@ class MemeEditorViewController: UIViewController {
     
     @objc func keyboardWillHide(_ notification: Notification) {
         view.frame.origin.y = 0
+    }
+    
+    func save(memedImage: UIImage) {
+        // Create the meme
+        self.meme = Meme(topText: self.topTextField.text, bottomText: self.bottomTextField.text, originalImage: self.imageView.image, memedImage: memedImage)
+        
+        // Add it to the memes array in the Application Delegate
+        let object = UIApplication.shared.delegate
+        let appDelegate = object as! AppDelegate
+        appDelegate.memes.append(meme)
     }
     
     func restartMemeModel() {
